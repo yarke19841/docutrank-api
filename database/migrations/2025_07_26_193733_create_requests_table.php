@@ -15,7 +15,15 @@ return new class extends Migration
         $table->id();
         $table->foreignId('user_id')->constrained()->onDelete('cascade');
         $table->string('certificate_type');
-        $table->enum('status', ['Recibido', 'En Validación', 'Emitido', 'Rechazado', 'Corrección'])->default('Recibido');
+       $table->enum('status', [
+                'Recibido',
+                'En Validación',
+                'Emitido',
+                'Aprobado',
+                'Rechazado',
+                'Corrección',
+                'Corrección Solicitada'
+            ])->default('Recibido');
         $table->timestamps();
         });
     }

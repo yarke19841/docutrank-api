@@ -7,10 +7,8 @@ export default function AdminLayout() {
         <h3>Panel Admin</h3>
         <ul>
           <li><Link to="/admin/dashboard">📋 Ver Solicitudes</Link></li>
-          {/* Agrega más enlaces si quieres */}
         </ul>
       </aside>
-
       <main style={{ flex: 1, padding: "20px" }}>
         <Outlet />
       </main>
