@@ -20,6 +20,9 @@ Route::post('/generate-certificate/{id}', [CertificateController::class, 'genera
 Route::get('/certificates/{id}', [CertificateController::class, 'show']);
 Route::get('/certificates/{id}/download', [CertificateController::class, 'download']);
 Route::post('/documents', [DocumentController::class, 'store']);
+Route::get('/requests/{id}/documents', [DocumentController::class, 'forRequest']);
+Route::get('/requests/{id}/certificate/download', [CertificateController::class, 'download']);
+Route::get('/certificates/{id}/view', [CertificateController::class, 'view']);
 
 });
 

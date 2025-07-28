@@ -17,6 +17,6 @@ class Document extends Model
 
     public function request()
     {
-        return $this->belongsTo(CertificateRequest::class);
+        return $this->belongsTo(CertificateRequest::class, 'request_id');
     }
 }

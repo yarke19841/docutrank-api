@@ -11,23 +11,36 @@ class DocumentController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'request_id' => 'required|exists:certificate_requests,id',
-            'file' => 'required|file|max:5120', // Máx 5MB
+            'certificate_request_id' => 'required|exists:certificate_requests,id',
+            'file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120', // max 5MB
+            'file_type' => 'required|string|max:255',
         ]);
 
         $path = $request->file('file')->store('documents', 'public');
 
-        $fileType = $request->file('file')->getClientMimeType();
-
         $document = Document::create([
-            'request_id' => $request->request_id,
+            'request_id' => $request->certificate_request_id, // Aquí el cambio clave
             'file_path'  => $path,
-            'file_type'  => $fileType,
+            'file_type'  => $request->file_type,
         ]);
 
         return response()->json([
-            'message' => 'Documento subido correctamente',
-            'data'    => $document,
-        ], 201);
+            'message'  => 'Documento subido correctamente',
+            'document' => $document
+        ]);
     }
+
+    public function forRequest($id)
+{
+    $userId = auth()->id();
+
+    $documents = \App\Models\Document::whereHas('request', function ($query) use ($userId, $id) {
+        $query->where('user_id', $userId)->where('id', $id);
+    })->get();
+
+    return response()->json([
+        'data' => $documents
+    ]);
+}
+
 }

@@ -85,5 +85,25 @@ public function download($id)
 
     return response()->download(storage_path('app/public/' . $path));
 }
+public function view($id)
+{
+    $user = auth()->user();
+
+    $certificate = Certificate::where('id', $id)
+        ->whereHas('request', function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })
+        ->first();
+
+    if (!$certificate || !Storage::disk('public')->exists($certificate->file_path)) {
+        return response()->json(['error' => 'Certificado no encontrado'], 404);
+    }
+
+    $mimeType = Storage::disk('public')->mimeType($certificate->file_path);
+    $content = Storage::disk('public')->get($certificate->file_path);
+
+    return response($content, 200)->header('Content-Type', $mimeType);
+}
+
 
 }
