@@ -42,4 +42,42 @@ class CertificateController extends Controller
     ]);
 }
 
+public function show($id)
+{
+    $user = auth()->user();
+
+    $certRequest = CertificateRequest::where('id', $id)
+                    ->where('user_id', $user->id)
+                    ->first();
+
+    if (!$certRequest || !$certRequest->certificate) {
+        return response()->json(['error' => 'Certificado no encontrado'], 404);
+    }
+
+    return response()->json([
+        'certificate' => $certRequest->certificate
+    ]);
+}
+
+public function download($id)
+{
+    $user = auth()->user();
+
+    $certRequest = CertificateRequest::where('id', $id)
+                    ->where('user_id', $user->id)
+                    ->first();
+
+    if (!$certRequest || !$certRequest->certificate) {
+        return response()->json(['error' => 'Certificado no encontrado'], 404);
+    }
+
+    $path = $certRequest->certificate->file_path;
+
+    if (!\Storage::disk('public')->exists($path)) {
+        return response()->json(['error' => 'Archivo no encontrado'], 404);
+    }
+
+    return response()->download(storage_path('app/public/' . $path));
+}
+
 }

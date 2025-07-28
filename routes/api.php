@@ -17,6 +17,8 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/my-requests', [CertificateRequestController::class, 'myRequests']);
 Route::post('/documents', [DocumentController::class, 'store']);
 Route::post('/generate-certificate/{id}', [CertificateController::class, 'generate']);
+Route::get('/certificates/{id}', [CertificateController::class, 'show']);
+Route::get('/certificates/{id}/download', [CertificateController::class, 'download']);
 
 });
 
