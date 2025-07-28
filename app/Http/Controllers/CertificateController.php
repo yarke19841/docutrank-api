@@ -37,9 +37,15 @@ class CertificateController extends Controller
     ]);
 
     return response()->json([
-        'message'     => 'Certificado generado',
-        'certificate' => $certificate
-    ]);
+    'message'     => 'Certificado generado',
+    'certificate' => [
+        'id' => $certificate->id,
+        'certificate_number' => $certificate->certificate_number,
+        'issued_at' => $certificate->issued_at,
+        'url' => $certificate->file_url
+    ]
+]);
+
 }
 
 public function show($id)

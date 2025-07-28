@@ -21,6 +21,11 @@ class Certificate extends Model
     {
         return $this->belongsTo(CertificateRequest::class, 'certificate_request_id');
     }
+    public function getFileUrlAttribute()
+{
+    return asset('storage/' . $this->file_path);
+}
+
 }
 
 
