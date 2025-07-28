@@ -1,5 +1,6 @@
 <?php
 
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,7 +11,7 @@ class Certificate extends Model
     use HasFactory;
 
     protected $fillable = [
-        'request_id',
+        'certificate_request_id',
         'certificate_number',
         'issued_at',
         'file_path',
@@ -18,7 +19,8 @@ class Certificate extends Model
 
     public function request()
     {
-        return $this->belongsTo(CertificateRequest::class);
+        return $this->belongsTo(CertificateRequest::class, 'certificate_request_id');
     }
 }
+
 

@@ -27,6 +27,7 @@ class CertificateRequest extends Model
 
     public function certificate()
     {
-        return $this->hasOne(Certificate::class);
+        return $this->hasOne(Certificate::class, 'certificate_request_id');
     }
+
 }

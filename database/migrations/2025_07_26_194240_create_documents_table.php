@@ -9,7 +9,7 @@ return new class extends Migration {
     {
         Schema::create('documents', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('request_id')->constrained()->onDelete('cascade');
+            $table->foreignId('request_id')->constrained('certificate_requests')->onDelete('cascade');
             $table->string('file_path'); // Ruta del archivo guardado
             $table->string('file_type'); // Ej: pdf, jpg, png
             $table->timestamps();

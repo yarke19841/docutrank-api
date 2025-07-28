@@ -8,12 +8,12 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('certificates', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('request_id')->constrained('certificate_requests')->onDelete('cascade');
-            $table->string('certificate_number')->unique();
-            $table->timestamp('issued_at')->nullable();
-            $table->string('file_path')->nullable();
-            $table->timestamps();
+    $table->id();
+    $table->foreignId('certificate_request_id')->constrained()->onDelete('cascade');
+    $table->string('certificate_number')->unique();
+    $table->timestamp('issued_at')->nullable();
+    $table->string('file_path')->nullable();
+    $table->timestamps();
         });
     }
 
