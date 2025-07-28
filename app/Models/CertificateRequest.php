@@ -11,8 +11,11 @@ class CertificateRequest extends Model
 
     protected $fillable = [
         'user_id',
-        'certificate_type',
-        'status',
+    'certificate_type',
+    'full_name',
+    'document_number',
+    'document_path',
+    'status',
     ];
 
     public function user()

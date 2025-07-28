@@ -61,5 +61,9 @@ public function getJWTCustomClaims()
     return [];
 }
 
+public function isAdmin(): bool
+{
+    return $this->role === 'ADMIN';
+}
 
 }

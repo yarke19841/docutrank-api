@@ -14,7 +14,13 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         // Puedes agregar middlewares globales aquí si lo necesitas
     })
-    ->withExceptions(function (Exceptions $exceptions): void {
-        // Puedes personalizar manejo de excepciones aquí
-    })
+   ->withExceptions(function (Exceptions $exceptions): void {
+    $exceptions->renderable(
+        fn (Illuminate\Auth\AuthenticationException $e, $request) =>
+            $request->expectsJson()
+                ? response()->json(['message' => 'No autenticado.'], 401)
+                : redirect()->guest('login')
+    );
+})
+
     ->create();
