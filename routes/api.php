@@ -5,6 +5,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CertificateRequestController;
 use App\Http\Controllers\DocumentController;
 
+use App\Http\Controllers\CertificateController;
+
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -14,6 +16,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/requests', [CertificateRequestController::class, 'store']);
     Route::get('/my-requests', [CertificateRequestController::class, 'myRequests']);
 Route::post('/documents', [DocumentController::class, 'store']);
+Route::post('/generate-certificate/{id}', [CertificateController::class, 'generate']);
 
 });
 
