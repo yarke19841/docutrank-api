@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: docutrack-api
+    env: php
+    buildCommand: "composer install --no-dev && php artisan config:cache"
+    startCommand: "php artisan serve --host=0.0.0.0 --port=10000"
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_KEY
+        value: base64:8oWSD9VVy/J6NnRcJcht/YU42C95KJQ3iXK280TSpXY=
+      - key: DB_CONNECTION
+        value: sqlite
