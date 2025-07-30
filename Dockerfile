@@ -1,34 +1,35 @@
-# Etapa 1: Base PHP con extensiones necesarias
-FROM php:8.1-cli
+# Etapa 1: Construcción (con Composer y dependencias)
+FROM composer:2.7 as build
 
-# Instala dependencias necesarias
-RUN apt-get update && apt-get install -y \
-    git zip unzip curl libzip-dev libpng-dev libonig-dev libxml2-dev \
-    && docker-php-ext-install pdo pdo_mysql mbstring zip bcmath
+WORKDIR /app
 
-# Instala Composer 2
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
-
-# Establece el directorio de trabajo
-WORKDIR /var/www
-
-# Copia todos los archivos
+# Copia todos los archivos del proyecto
 COPY . .
 
-# Copia .env.example como .env si no existe
-RUN cp .env.example .env || true
+# Instala dependencias de producción
+RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Instala dependencias PHP
-RUN composer install --optimize-autoloader --no-interaction --no-progress --prefer-dist || true
+# Etapa 2: Servidor final con Apache y PHP 8.2
+FROM php:8.2-apache
 
-# Genera la APP_KEY (evita que falle en el build con fallback)
-RUN php artisan key:generate || echo "Fallback key used"
+# Instala extensiones necesarias
+RUN apt-get update && apt-get install -y \
+    libzip-dev unzip libpng-dev libonig-dev libxml2-dev zip \
+    && docker-php-ext-install pdo pdo_mysql zip
 
-# Permisos (opcional, pero útil en producción)
-RUN chmod -R 755 /var/www/storage
+# Habilita mod_rewrite para Laravel
+RUN a2enmod rewrite
 
-# Expone el puerto del servidor Laravel
-EXPOSE 8000
+# Copia archivos del build anterior
+COPY --from=build /app /var/www/html
 
-# Comando por defecto
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+# Configura el DocumentRoot de Apache a /public
+ENV APACHE_DOCUMENT_ROOT /var/www/html/public
+
+RUN sed -ri -e 's!/var/www/html!/var/www/html/public!g' \
+    /etc/apache2/sites-available/000-default.conf
+
+# Establece permisos correctos
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+
+EXPOSE 80
