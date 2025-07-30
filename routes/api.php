@@ -6,6 +6,11 @@ use App\Http\Controllers\CertificateRequestController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\CertificateController;
 
+
+Route::get('/', function () {
+    return response()->json(['message' => 'Laravel API corriendo correctamente']);
+});
+
 // Rutas públicas
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
