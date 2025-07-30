@@ -1,31 +1,27 @@
-FROM php:8.1-cli
+FROM php:8.2-fpm
 
 # Instalar dependencias del sistema
 RUN apt-get update && apt-get install -y \
-    git curl unzip zip libzip-dev libpq-dev \
-    nodejs npm
-
-# Instalar extensiones de PHP
-RUN docker-php-ext-install pdo pdo_pgsql zip
+    git curl zip unzip libzip-dev libpng-dev libonig-dev libxml2-dev libpq-dev \
+    && docker-php-ext-install pdo pdo_mysql zip gd
 
 # Instalar Composer
-RUN curl -sS https://getcomposer.org/installer | php && \
-    mv composer.phar /usr/local/bin/composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
+# Establecer directorio de trabajo
 WORKDIR /var/www
 
-# Copiar el código fuente
+# Copiar archivos de Laravel
 COPY . .
 
 # Instalar dependencias PHP
-RUN composer install --no-dev --optimize-autoloader --no-interaction -vvv
+RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Compilar assets (si tienes React)
-RUN npm install && npm run build || true
+# Dar permisos
+RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 
-# Crear symlink de storage (ignora errores si ya existe)
-RUN php artisan storage:link || true
-
+# Exponer el puerto (Render lo detecta automáticamente)
 EXPOSE 8000
 
+# Comando de inicio
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]

@@ -1,43 +1,39 @@
 services:
   - type: web
-    name: docutrack-api
+    name: laravel-api
     env: docker
-    repo: https://github.com/yarke19841/docutrack-api
     plan: free
-    buildCommand: |
-      composer install --no-dev
-      php artisan migrate --force
-      php artisan storage:link
-      npm install && npm run build
-      php artisan config:cache
-    startCommand: php artisan serve --host=0.0.0.0 --port=10000
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    autoDeploy: true
     envVars:
       - key: APP_ENV
         value: production
       - key: APP_KEY
         generateValue: true
+      - key: APP_DEBUG
+        value: false
       - key: DB_CONNECTION
         value: pgsql
       - key: DB_HOST
         fromDatabase:
-          name: docutrack-db
+          name: laravel-db
           property: host
       - key: DB_PORT
         value: 5432
       - key: DB_DATABASE
         fromDatabase:
-          name: docutrack-db
+          name: laravel-db
           property: database
       - key: DB_USERNAME
         fromDatabase:
-          name: docutrack-db
+          name: laravel-db
           property: user
       - key: DB_PASSWORD
         fromDatabase:
-          name: docutrack-db
+          name: laravel-db
           property: password
 
 databases:
-  - name: docutrack-db
-    databaseName: docutrack
-    user: docutrack_user
+  - name: laravel-db
+    plan: free
