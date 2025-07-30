@@ -35,9 +35,18 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/certificates/{id}/download', [CertificateController::class, 'download']);
     Route::get('/certificates/{id}/view', [CertificateController::class, 'view']);
     Route::get('/requests/{id}/certificate/download', [CertificateController::class, 'download']);
+Route::get('/certificates/{id}/download', [CertificateController::class, 'download']);
 
     // ADMIN - Panel de control
     Route::get('/admin/requests', [CertificateRequestController::class, 'indexAll']);           // Lista todas
     Route::get('/admin/requests/{id}', [CertificateRequestController::class, 'show']);          // Ver detalle
     Route::put('/admin/requests/{id}/status', [CertificateRequestController::class, 'updateStatus']); // Cambiar estado
+    Route::put('/admin/requests/{id}/status', [CertificateRequestController::class, 'updateStatus']);
+    Route::put('/admin/requests/{id}/stage', [CertificateRequestController::class, 'updateStage']);
+    Route::post('/logout', function () {
+    auth()->logout(); // solo funciona con JWT
+    return response()->json(['message' => 'Sesión cerrada correctamente']);
+});
+
+
 });

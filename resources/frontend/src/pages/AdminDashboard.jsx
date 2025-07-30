@@ -33,9 +33,31 @@ export default function AdminDashboard() {
     navigate(`/admin/requests/${id}`);
   };
 
+  const handleLogout = async () => {
+  try {
+    const token = localStorage.getItem("token");
+
+    await api.post("/logout", {}, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    localStorage.removeItem("token");
+    navigate("/login");
+  } catch (err) {
+    console.error("Error al cerrar sesión:", err);
+    alert("No se pudo cerrar la sesión.");
+  }
+};
+
+
   return (
     <div style={{ padding: "20px" }}>
-      <h2>Panel de Solicitudes</h2>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <h2>Panel de Solicitudes</h2>
+        <button onClick={handleLogout}>Cerrar sesión</button>
+      </div>
 
       {loading ? (
         <p>Cargando...</p>

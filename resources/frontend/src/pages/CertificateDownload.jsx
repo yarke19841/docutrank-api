@@ -1,47 +1,55 @@
-// src/pages/CertificateDownload.jsx
-import { useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import api from "../services/api";
+import BackButton from "../components/BackButton";
 
-export default function CertificateDownload() {
-  const { id } = useParams();
-  const navigate = useNavigate();
+export default function MyRequests() {
+  const [requests, setRequests] = useState([]);
+  const storageUrl = import.meta.env.VITE_STORAGE_URL; // ✅ Aquí lo declaras
 
   useEffect(() => {
-    const downloadCertificate = async () => {
+    const fetchRequests = async () => {
       const token = localStorage.getItem("token");
       try {
-        const res = await api.get(`/certificates/${id}/download`, {
+        const res = await api.get("/my-requests", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-          responseType: "blob", // importante para descargar archivos
         });
-
-        // Crear un enlace y simular clic
-        const url = window.URL.createObjectURL(new Blob([res.data]));
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute("download", "certificado.pdf");
-        document.body.appendChild(link);
-        link.click();
-
-        // Limpiar y redirigir
-        setTimeout(() => {
-          navigate("/mis-solicitudes");
-        }, 2000);
+        setRequests(res.data.data);
       } catch (err) {
-        console.error("Error al descargar el certificado:", err);
-        navigate("/mis-solicitudes");
+        console.error("Error al obtener solicitudes:", err);
       }
     };
 
-    downloadCertificate();
-  }, [id, navigate]);
+    fetchRequests();
+  }, []);
 
   return (
     <div>
-      <h3>Descargando certificado...</h3>
+      <BackButton />
+      <h2>Mis Solicitudes</h2>
+      {requests.length === 0 ? (
+        <p>No tienes solicitudes registradas.</p>
+      ) : (
+        <ul>
+          {requests.map((req) => (
+            <li key={req.id} style={{ marginBottom: "1rem" }}>
+              <strong>{req.tipo_certificado}</strong> <br />
+              Estado: {req.status} <br />
+              Etapa: {req.stage} <br />
+              {req.stage === "Emitido" && req.certificate && (
+                <a
+                  href={`${storageUrl}/${req.certificate.file_path}`} // ✅ uso dinámico
+                  download={`${req.certificate.certificate_number}.pdf`}
+                  rel="noopener noreferrer"
+                >
+                  Descargar Certificado
+                </a>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

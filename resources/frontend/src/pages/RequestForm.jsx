@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import api from '../services/api';
-import BackButton from '../components/BackButton'; // 👈 Importamos el botón
+import BackButton from '../components/BackButton';
 
 export default function RequestForm() {
   const [form, setForm] = useState({
@@ -8,6 +8,7 @@ export default function RequestForm() {
     full_name: '',
     document_number: ''
   });
+
   const [file, setFile] = useState(null);
   const [message, setMessage] = useState('');
 
@@ -23,22 +24,22 @@ export default function RequestForm() {
       return;
     }
 
-    const data = new FormData();
-    data.append('certificate_type', form.certificate_type);
-    data.append('full_name', form.full_name);
-    data.append('document_number', form.document_number);
-    data.append('document', file);
+    const formData = new FormData();
+    formData.append('certificate_type', form.certificate_type);
+    formData.append('full_name', form.full_name);
+    formData.append('document_number', form.document_number);
+    formData.append('document', file); // ✅ CAMPO correcto esperado por el backend
 
     try {
       const token = localStorage.getItem('token');
-      await api.post('/certificaterequests', data, {
+      await api.post('/certificaterequests', formData, {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
         }
       });
 
-      setMessage('Solicitud enviada exitosamente.');
+      setMessage('✅ Solicitud enviada correctamente.');
       setForm({
         certificate_type: 'Nacimiento',
         full_name: '',
@@ -46,14 +47,18 @@ export default function RequestForm() {
       });
       setFile(null);
     } catch (err) {
-      const msg = err.response?.data?.errors?.document?.[0] || 'Error al enviar la solicitud';
+      const errores = err.response?.data?.errors;
+      console.error("Errores:", errores);
+      const msg = errores
+        ? Object.values(errores).flat().join(' | ')
+        : '❌ Error al enviar la solicitud.';
       setMessage(msg);
     }
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <BackButton /> {/* 👈 Aquí está el botón de regreso */}
+      <BackButton />
 
       <h2>Solicitar Certificado</h2>
 

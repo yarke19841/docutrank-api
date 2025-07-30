@@ -12,19 +12,24 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('certificate_requests', function (Blueprint $table) {
-        $table->id();
-        $table->foreignId('user_id')->constrained()->onDelete('cascade');
-        $table->string('certificate_type');
-       $table->enum('status', [
-                'Recibido',
-                'En Validación',
-                'Emitido',
+            $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('certificate_type');
+
+            $table->enum('status', [
+                'Pendiente',
                 'Aprobado',
                 'Rechazado',
-                'Corrección',
                 'Corrección Solicitada'
-            ])->default('Recibido');
-        $table->timestamps();
+            ])->default('Pendiente'); // ✅ Corregido
+
+            $table->enum('stage', [
+                'Recibido',
+                'En Validación',
+                'Emitido'
+            ])->default('Recibido'); // ✅ Campo separado para la etapa
+
+            $table->timestamps();
         });
     }
 

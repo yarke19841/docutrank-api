@@ -4,17 +4,24 @@ import BackButton from "../components/BackButton";
 
 export default function CertificateList() {
   const [certificates, setCertificates] = useState([]);
+const storageUrl = import.meta.env.VITE_STORAGE_URL;
 
   useEffect(() => {
     const fetchCertificates = async () => {
       const token = localStorage.getItem("token");
       try {
-        const res = await api.get("/certificates", {
+        const res = await api.get("/my-requests", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        setCertificates(res.data.data); // Ajusta esto si tu backend devuelve un campo distinto
+
+        // Filtrar solo las solicitudes con etapa "Emitido" que tengan un certificado generado
+        const certificadosEmitidos = res.data.data.filter(
+          (req) => req.stage === "Emitido" && req.certificate
+        );
+
+        setCertificates(certificadosEmitidos);
       } catch (err) {
         console.error("Error al obtener certificados:", err);
       }
@@ -27,20 +34,28 @@ export default function CertificateList() {
     <div>
       <BackButton />
       <h2>Mis Certificados</h2>
-      <ul>
-        {certificates.length === 0 ? (
-          <p>No hay certificados aún.</p>
-        ) : (
-          certificates.map((cert) => (
-            <li key={cert.id}>
-              <strong>{cert.certificate_number}</strong> -{" "}
-              <a href={cert.url} target="_blank" rel="noopener noreferrer">
-                Descargar
-              </a>
+      {certificates.length === 0 ? (
+        <p>No hay certificados emitidos aún.</p>
+      ) : (
+        <ul>
+          {certificates.map((req) => (
+            <li key={req.id} style={{ marginBottom: "1rem" }}>
+              <strong>{req.certificate.certificate_number}</strong> –{" "}
+         <a
+  href={`${storageUrl}/${req.certificate.file_path}`}
+  download={`${req.certificate.certificate_number}.pdf`}
+  rel="noopener noreferrer"
+>
+  Descargar Certificado
+</a>
+
+
+
+
             </li>
-          ))
-        )}
-      </ul>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
