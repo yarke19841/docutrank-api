@@ -17,7 +17,7 @@ WORKDIR /var/www
 COPY . .
 
 # Instalar dependencias PHP
-RUN composer install --no-dev --optimize-autoloader || cat /var/www/storage/logs/laravel.log || true
+RUN composer install --no-dev --optimize-autoloader -vvv
 
 
 # Instalar y construir assets con NPM (para React en resources/js)
