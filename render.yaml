@@ -3,9 +3,8 @@ services:
     name: laravel-api
     env: docker
     plan: free
-    rootDir: backend
+    region: oregon
     dockerfilePath: ./Dockerfile
-    autoDeploy: true
     envVars:
       - key: APP_ENV
         value: production
@@ -13,27 +12,5 @@ services:
         generateValue: true
       - key: APP_DEBUG
         value: false
-      - key: DB_CONNECTION
-        value: pgsql
-      - key: DB_HOST
-        fromDatabase:
-          name: laravel-db
-          property: host
-      - key: DB_PORT
-        value: 5432
-      - key: DB_DATABASE
-        fromDatabase:
-          name: laravel-db
-          property: database
-      - key: DB_USERNAME
-        fromDatabase:
-          name: laravel-db
-          property: user
-      - key: DB_PASSWORD
-        fromDatabase:
-          name: laravel-db
-          property: password
-
-databases:
-  - name: laravel-db
-    plan: free
+      - key: APP_URL
+        value: https://laravel-api.onrender.com

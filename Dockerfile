@@ -1,27 +1,31 @@
-FROM php:8.2-fpm
+# Usa imagen oficial de PHP 8.1 con extensiones necesarias
+FROM php:8.1-cli
 
-# Instalar dependencias del sistema
+# Instala dependencias del sistema necesarias para Laravel y DomPDF
 RUN apt-get update && apt-get install -y \
-    git curl zip unzip libzip-dev libpng-dev libonig-dev libxml2-dev libpq-dev \
-    && docker-php-ext-install pdo pdo_mysql zip gd
+    unzip zip git curl libzip-dev libpng-dev libonig-dev libxml2-dev \
+    && docker-php-ext-install pdo pdo_mysql mbstring zip exif pcntl bcmath
 
-# Instalar Composer
+# Instala Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Establecer directorio de trabajo
+# Establece directorio de trabajo
 WORKDIR /var/www
 
-# Copiar archivos de Laravel
+# Copia el proyecto Laravel
 COPY . .
 
-# Instalar dependencias PHP
+# Copia el .env de ejemplo
+RUN cp .env.example .env
+
+# Instala dependencias de Composer
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Dar permisos
-RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+# Genera la clave de Laravel
+RUN php artisan key:generate
 
-# Exponer el puerto (Render lo detecta automáticamente)
+# Expone el puerto por defecto de Laravel
 EXPOSE 8000
 
-# Comando de inicio
+# Comando por defecto para iniciar Laravel
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
