@@ -1,40 +1,30 @@
-# Etapa 1: Construcción con Composer y Node
-FROM php:8.1-cli as build
+FROM php:8.1-cli
 
 # Instalar dependencias del sistema
 RUN apt-get update && apt-get install -y \
-    git unzip curl libzip-dev zip libpq-dev \
+    git curl unzip zip libzip-dev libpq-dev \
     nodejs npm
+
+# Instalar extensiones de PHP
+RUN docker-php-ext-install pdo pdo_pgsql zip
 
 # Instalar Composer
 RUN curl -sS https://getcomposer.org/installer | php && \
     mv composer.phar /usr/local/bin/composer
 
-# Crear directorio del proyecto
 WORKDIR /var/www
 
 # Copiar el código fuente
 COPY . .
 
 # Instalar dependencias PHP
-RUN composer install --no-dev --optimize-autoloader -vvv
+RUN composer install --no-dev --optimize-autoloader --no-interaction -vvv
 
-
-# Instalar y construir assets con NPM (para React en resources/js)
+# Compilar assets (si tienes React)
 RUN npm install && npm run build || true
 
-# Generar storage link
+# Crear symlink de storage (ignora errores si ya existe)
 RUN php artisan storage:link || true
-
-# Etapa final: ejecutar Laravel
-FROM php:8.1-cli
-
-RUN apt-get update && apt-get install -y libzip-dev zip libpq-dev && \
-    docker-php-ext-install pdo pdo_pgsql zip
-
-WORKDIR /var/www
-
-COPY --from=build /var/www /var/www
 
 EXPOSE 8000
 
