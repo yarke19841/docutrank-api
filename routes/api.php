@@ -14,7 +14,7 @@ Route::get('/ping', function () {
 });
 
 // Rutas protegidas por autenticación
-Route::middleware('auth:api')->group(function () {
+Route::middleware('auth.jwt')->group(function () {
 
     // Usuario autenticado
     Route::get('/me', [AuthController::class, 'me']);
