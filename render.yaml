@@ -3,6 +3,7 @@ services:
     name: laravel-api
     env: docker
     plan: free
+    autoDeploy: true
     region: oregon
     dockerfilePath: ./Dockerfile
     envVars:
