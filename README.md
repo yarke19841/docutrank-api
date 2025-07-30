@@ -1,61 +1,288 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+🧾 Sistema de Solicitud de Certificados - Laravel + React
 
-## About Laravel
+Este proyecto es un sistema web para la gestión de solicitudes de certificados (Nacimiento, Matrimonio, Defunción), con roles diferenciados de usuario ciudadano y administrador.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+🔗 Repositorio GitHub: https://github.com/yarke19841/docutrank-api
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+──────────────────────────────────────────────────────────────
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+🗂️ PLANIFICACIÓN DEL PROYECTO
 
-## Learning Laravel
+1. Análisis de requerimientos: Se definieron los roles, flujos, tipos de certificados y etapas del trámite.
+2. Diseño de arquitectura: Laravel para el backend de API REST y React como frontend embebido.
+3. Desarrollo modular: Registro, login, dashboards diferenciados, flujo de aprobación y generación de certificados en PDF.
+4. Pruebas locales.
+5. Documentación (este archivo).
+6. Despliegue: No realizado, pero preparado para Render.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+──────────────────────────────────────────────────────────────
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+🚀 TECNOLOGÍAS UTILIZADAS
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- Laravel (PHP): Backend robusto y modular.
+- React.js: Frontend dinámico y desacoplado.
+- PostgreSQL: Base de datos relacional.
+- DOMPDF: Generación de certificados PDF.
+- JWT Auth: Autenticación moderna y segura.
 
-## Laravel Sponsors
+──────────────────────────────────────────────────────────────
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+🛠️ INSTALACIÓN DE HERRAMIENTAS NECESARIAS (MacOS, Windows, Linux)
 
-### Premium Partners
+1. PHP >= 8.2 y Composer
+   - macOS (Homebrew):
+     brew install php@8.2
+     brew link --overwrite php@8.2 --force
+     brew install composer
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+   - Windows:
+     Descargar PHP desde https://windows.php.net/download
+     Instalar Composer desde https://getcomposer.org/Composer-Setup.exe
 
-## Contributing
+   - Ubuntu/Debian:
+     sudo apt install php8.2 php8.2-cli php8.2-mbstring php8.2-xml php8.2-curl php8.2-pgsql unzip curl
+     curl -sS https://getcomposer.org/installer | php
+     sudo mv composer.phar /usr/local/bin/composer
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+2. PostgreSQL
+   - macOS: brew install postgresql
+   - Windows: https://www.postgresql.org/download/windows/
+   - Linux: sudo apt install postgresql postgresql-contrib
 
-## Code of Conduct
+3. Node.js y npm
+   - macOS: brew install node
+   - Windows: https://nodejs.org
+   - Linux: sudo apt install nodejs npm
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+4. Git
+   - macOS: brew install git
+   - Windows: https://git-scm.com/download/win
+   - Linux: sudo apt install git
 
-## Security Vulnerabilities
+──────────────────────────────────────────────────────────────
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+📦 INSTALACIÓN Y EJECUCIÓN
 
-## License
+1. Clonar el proyecto:
+   git clone https://github.com/yarke19841/docutrank-api.git
+   cd docutrank-api
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+2. Backend Laravel:
+   cp .env.example .env
+   composer install
+   php artisan key:generate
+   php artisan migrate --seed
+   php artisan serve
+
+   En .env usar:
+   APP_URL=http://localhost:8000
+
+3. Frontend React:
+   cd resources/frontend
+   cp .env.example .env
+   npm install
+   npm run dev
+
+   En .env del frontend usar:
+   VITE_API_URL=http://localhost:8000/api
+   VITE_STORAGE_URL=http://localhost:8000/storage
+
+──────────────────────────────────────────────────────────────
+
+👥 USO DEL SISTEMA
+
+- Registro con selección de rol (Usuario o Administrador).
+- Dashboard dinámico según rol.
+- Usuario: crea una solicitud, ve sus solicitudes, descargar si es Emitido.
+- Admin: aprobar, rechazar, pedir corrección como estados, emitir certificado (PDF) como un estado para que el usuario emita el certificado.
+
+──────────────────────────────────────────────────────────────
+
+📁 ARCHIVOS IMPORTANTES
+
+- .env.example (backend y frontend)
+- routes/api.php
+- resources/views/certificates/pdf.blade.php
+- database/seeders (si aplica)
+
+──────────────────────────────────────────────────────────────
+
+📝 NOTAS FINALES
+
+- El sistema corre localmente.
+- Despliegue en Render no forma parte de esta entrega, pero está preparado.
+- Las variables de entorno de producción están comentadas.
+
+──────────────────────────────────────────────────────────────
+
+🧠 AUTORA
+
+Desarrollado por Yarquelis Paz
+Rol: Ingeniería en Sistemas y Computación
+
+──────────────────────────────────────────────────────────────
+
+📚 DOCUMENTACIÓN ADICIONAL
+
+Este proyecto incluye dos archivos de ayuda específicos para cada parte del sistema:
+
+- 📘 README_FRONTEND.txt  
+  Explica cómo instalar, configurar y ejecutar el frontend (React) embebido en el proyecto Laravel.
+
+- 📗 README_BACKEND.txt  
+  Contiene las instrucciones detalladas para el backend Laravel, incluyendo migraciones, rutas, configuración de JWT, etc.
+
+Ambos archivos son útiles si deseas trabajar solo con una parte del sistema o entenderla en profundidad.
+
+
+──────────────────────────────────────────────────────────────
+
+📗 CONTENIDO DETALLADO DEL BACKEND
+
+
+# 📗 Backend - Laravel API
+
+Este es el backend del sistema de solicitud de certificados, desarrollado con Laravel. Se encarga de la autenticación, manejo de usuarios, flujo de certificados y generación de PDFs.
+
+---
+
+## 🚀 Tecnologías
+
+- Laravel 10+
+- PostgreSQL
+- DOMPDF
+- JWT Auth (via tymon/jwt-auth)
+
+---
+
+## 📦 Instalación
+
+1. Clona el repositorio y accede al proyecto:
+   ```bash
+   git clone https://github.com/yarke19841/docutrank-api.git
+   cd docutrank-api
+   ```
+
+2. Copia el archivo `.env`:
+   ```bash
+   cp .env.example .env
+   ```
+
+3. Instala dependencias:
+   ```bash
+   composer install
+   ```
+
+4. Genera la clave de la app:
+   ```bash
+   php artisan key:generate
+   ```
+
+5. Ejecuta las migraciones y seeders:
+   ```bash
+   php artisan migrate --seed
+   ```
+
+6. Corre el servidor:
+   ```bash
+   php artisan serve
+   ```
+
+---
+
+## ⚙️ Variables de entorno (`.env`)
+
+Para desarrollo local:
+```env
+APP_URL=http://localhost:8000
+```
+
+Para producción (Render u otro entorno):
+```env
+# APP_URL=https://docutrank-api-1.onrender.com
+```
+
+---
+
+## 📋 Funcionalidades principales
+
+- Registro y autenticación JWT
+- Roles: Usuario y Administrador
+- Subida y almacenamiento de documentos
+- Control de estados y etapas
+- Generación automática de PDF cuando el estado es "Emitido"
+
+---
+
+
+──────────────────────────────────────────────────────────────
+
+📘 CONTENIDO DETALLADO DEL FRONTEND
+
+
+# 📘 Frontend - React (resources/frontend)
+
+Este es el frontend del sistema de solicitud de certificados, construido con React.js e integrado dentro del proyecto Laravel en la carpeta `resources/frontend`.
+
+---
+
+## 🚀 Tecnologías
+
+- React.js + Vite
+- JWT Authentication
+- Tailwind CSS (si aplica)
+- Axios para peticiones HTTP
+
+---
+
+## 📦 Instalación
+
+1. Accede a la carpeta:
+   ```bash
+   cd resources/frontend
+   ```
+
+2. Copia el archivo de entorno:
+   ```bash
+   cp .env.example .env
+   ```
+
+3. Instala las dependencias:
+   ```bash
+   npm install
+   ```
+
+4. Inicia el servidor de desarrollo:
+   ```bash
+   npm run dev
+   ```
+
+---
+
+## ⚙️ Variables de entorno (`.env`)
+
+Para desarrollo local:
+```env
+VITE_API_URL=http://localhost:8000/api
+VITE_STORAGE_URL=http://localhost:8000/storage
+```
+
+Para producción (Render u otro hosting):
+```env
+# VITE_API_URL=https://docutrank-api-1.onrender.com/api
+# VITE_STORAGE_URL=https://docutrank-api-1.onrender.com/storage
+```
+
+---
+
+## 📋 Funcionalidades principales
+
+- Registro de usuarios con rol (usuario o administrador)
+- Login con JWT
+- Dashboard dinámico según rol
+- Solicitud de certificados
+- Descarga de certificados PDF (cuando están emitidos)
+
+---
+
