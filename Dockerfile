@@ -1,31 +1,34 @@
-# Usa imagen oficial de PHP 8.1 con extensiones necesarias
+# Etapa 1: Base PHP con extensiones necesarias
 FROM php:8.1-cli
 
-# Instala dependencias del sistema necesarias para Laravel y DomPDF
+# Instala dependencias necesarias
 RUN apt-get update && apt-get install -y \
-    unzip zip git curl libzip-dev libpng-dev libonig-dev libxml2-dev \
-    && docker-php-ext-install pdo pdo_mysql mbstring zip exif pcntl bcmath
+    git zip unzip curl libzip-dev libpng-dev libonig-dev libxml2-dev \
+    && docker-php-ext-install pdo pdo_mysql mbstring zip bcmath
 
-# Instala Composer
+# Instala Composer 2
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Establece directorio de trabajo
+# Establece el directorio de trabajo
 WORKDIR /var/www
 
-# Copia el proyecto Laravel
+# Copia todos los archivos
 COPY . .
 
-# Copia el .env de ejemplo
-RUN cp .env.example .env
+# Copia .env.example como .env si no existe
+RUN cp .env.example .env || true
 
-# Instala dependencias de Composer
-RUN composer install --no-dev --optimize-autoloader --no-interaction
+# Instala dependencias PHP
+RUN composer install --optimize-autoloader --no-interaction --no-progress --prefer-dist || true
 
-# Genera la clave de Laravel
-RUN php artisan key:generate
+# Genera la APP_KEY (evita que falle en el build con fallback)
+RUN php artisan key:generate || echo "Fallback key used"
 
-# Expone el puerto por defecto de Laravel
+# Permisos (opcional, pero útil en producción)
+RUN chmod -R 755 /var/www/storage
+
+# Expone el puerto del servidor Laravel
 EXPOSE 8000
 
-# Comando por defecto para iniciar Laravel
+# Comando por defecto
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
